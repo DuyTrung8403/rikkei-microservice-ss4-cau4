@@ -1,11 +1,13 @@
 package com.rikkei.microservice.orderservice.exception;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.stream.Collectors;
@@ -48,6 +50,18 @@ public class GlobalExceptionHandler {
                 .message(ex.getMessage())
                 .build();
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(ResponseStatusException.class)
+    public ResponseEntity<ApiResponseError> handleResponseStatusException(ResponseStatusException ex, HttpServletRequest request) {
+        ApiResponseError error = ApiResponseError.builder()
+                .timestamp(LocalDateTime.now())
+                .status(ex.getStatusCode().value())
+                .error(HttpStatus.valueOf(ex.getStatusCode().value()).getReasonPhrase())
+                .message(ex.getReason())
+                .path(request.getRequestURI())
+                .build();
+        return new ResponseEntity<>(error, ex.getStatusCode());
     }
 
     @ExceptionHandler(Exception.class)

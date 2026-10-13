@@ -2,6 +2,7 @@ package com.rikkei.microservice.orderservice.controller;
 
 import com.rikkei.microservice.orderservice.dto.OrderRequestDTO;
 import com.rikkei.microservice.orderservice.dto.OrderResponseDTO;
+import com.rikkei.microservice.orderservice.dto.Product;
 import com.rikkei.microservice.orderservice.service.OrderService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -33,5 +34,11 @@ public class OrderController {
     @GetMapping
     public ResponseEntity<List<OrderResponseDTO>> getAllOrders() {
         return ResponseEntity.ok(orderService.getAllOrders());
+    }
+
+    @GetMapping("/getProduct/{productId}")
+    public ResponseEntity<Product> getProduct(@PathVariable("productId") String productId) {
+        Product product = orderService.getProductFromProductService(productId);
+        return ResponseEntity.ok(product);
     }
 }
