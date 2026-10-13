@@ -35,8 +35,11 @@ public class OrderServiceImpl implements OrderService {
             throw new IllegalArgumentException("Số lượng (quantity) phải lớn hơn 0");
         }
 
-        // Giả lập đơn giá lấy từ Product Service (ví dụ đơn giá 150.00)
-        BigDecimal unitPrice = BigDecimal.valueOf(150.00);
+        // Lấy thông tin sản phẩm và đơn giá từ Product Service qua @LoadBalanced
+        Product product = getProductFromProductService2(String.valueOf(requestDTO.getProductId()));
+        BigDecimal unitPrice = (product != null && product.getPrice() != null)
+                ? product.getPrice()
+                : BigDecimal.valueOf(150.00);
         BigDecimal totalAmount = unitPrice.multiply(BigDecimal.valueOf(requestDTO.getQuantity()));
 
         Order order = Order.builder()
@@ -110,5 +113,29 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Product getProductFromProductService(Long productId) {
         return getProductFromProductService(String.valueOf(productId));
+    }
+
+    @Override
+    public Product getProductFromProductService2(String productId) {
+        String targetUrl = "http://ProductService/api/v1/products/" + productId;
+
+        // BƯỚC F: Thực hiện gọi API lấy về sản phẩm qua @LoadBalanced
+        try {
+            return restClient.get()
+                    .uri(targetUrl)
+                    .retrieve()
+                    .body(Product.class);
+        } catch (ResourceAccessException ex) {
+            throw new ResponseStatusException(
+                    HttpStatus.SERVICE_UNAVAILABLE,
+                    "Không thể kết nối tới PRODUCT-SERVICE: " + ex.getMessage(),
+                    ex
+            );
+        }
+    }
+
+    @Override
+    public Product getProductFromProductService2(Long productId) {
+        return getProductFromProductService2(String.valueOf(productId));
     }
 }

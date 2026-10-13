@@ -3,14 +3,17 @@ package com.rikkei.microservice.productservice.controller;
 import com.rikkei.microservice.productservice.dto.ProductRequestDTO;
 import com.rikkei.microservice.productservice.dto.ProductResponseDTO;
 import com.rikkei.microservice.productservice.service.ProductService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/v1/products")
 @RequiredArgsConstructor
@@ -25,7 +28,8 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProductResponseDTO> getProductById(@PathVariable("id") Long id) {
+    public ResponseEntity<ProductResponseDTO> getProductById(@PathVariable("id") Long id, HttpServletRequest request) {
+        log.info("===> [Product Service - Port {}] Xử lý request getProductById với ID: {}", request.getServerPort(), id);
         ProductResponseDTO response = productService.getProductById(id);
         return ResponseEntity.ok(response);
     }

@@ -12,4 +12,6 @@ public interface OrderService {
     List<OrderResponseDTO> getAllOrders();
     Product getProductFromProductService(String productId);
     Product getProductFromProductService(Long productId);
+    Product getProductFromProductService2(String productId);
+    Product getProductFromProductService2(Long productId);
 }

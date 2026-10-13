@@ -41,4 +41,10 @@ public class OrderController {
         Product product = orderService.getProductFromProductService(productId);
         return ResponseEntity.ok(product);
     }
+
+    @GetMapping("/getProduct2/{productId}")
+    public ResponseEntity<Product> getProduct2(@PathVariable("productId") String productId) {
+        Product product = orderService.getProductFromProductService2(productId);
+        return ResponseEntity.ok(product);
+    }
 }
