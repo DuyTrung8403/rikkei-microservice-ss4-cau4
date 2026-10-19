@@ -13,6 +13,8 @@ spring:
                           uri: lb://customer-service
                           predicates:
                               - Path=/api/v1/customers/**
+                          filters:
+                            - AddResponseHeader=X-System-Name, Api-Gateway-System
 
 eureka:
     client:
