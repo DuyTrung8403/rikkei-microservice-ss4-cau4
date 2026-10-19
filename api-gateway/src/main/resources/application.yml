@@ -7,7 +7,7 @@ spring:
         gateway:
             routes:
                 - id: customer-service-route
-                  uri: http://localhost:8081
+                  uri: lb://customer-service
                   predicates:
                       - Path=/api/v1/customers/**
 eureka:
